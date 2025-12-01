@@ -535,14 +535,6 @@ See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for complete structure details.
 - **Pedestrian Waiting Time**: Average wait at crosswalks
 - **Fuel Consumption** (estimated): Based on stops and idling
 
-## Team
-
-- **Course**: Intelligent Multi-Agent Systems (MRO-12)
-- **University**: TH Deggendorf
-- **Group Size**: 4 students
-- **Project Duration**: Course semester
-- **Credits**: 5 ECTS
-
 ## Future Enhancements
 
 Potential extensions for advanced development:
@@ -556,37 +548,4 @@ Potential extensions for advanced development:
 - Machine learning for demand prediction
 - Real-time data integration
 
-## License
-
-This project is developed for academic purposes as part of the Intelligent Multi-Agent Systems course at TH Deggendorf.
-
-## Documentation
-
-This project includes comprehensive documentation:
-
-- **[README.md](README.md)**: Main project overview and guide (this file)
-- **[ARCHITECTURE.md](ARCHITECTURE.md)**: Detailed system architecture, diagrams, and design patterns
-- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)**: Complete file and folder structure
-- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Git workflow and contribution guidelines
-- **[GIT_SETUP.md](GIT_SETUP.md)**: Git repository setup instructions
-- **[Phase0_Setup_Instructions.md](Phase0_Setup_Instructions.md)**: Phase 0 setup guide
-- **[instructions](instructions)**: Original project requirements
-
-### Additional Resources
-
-- AnyLogic 8 Documentation: https://anylogic.help/
-- AnyLogic Road Traffic Library Documentation
-- Multi-Agent Systems: Modern Approach (Wooldridge)
-- Reinforcement Learning: An Introduction (Sutton & Barto)
-- Course Lecture Materials (MRO-12, TH Deggendorf)
-
-## Contact
-
-For questions about this project, please contact the development team or course instructor.
-
----
-
-**Last Updated**: 2024  
-**Version**: 1.0  
-**Status**: In Development
 
