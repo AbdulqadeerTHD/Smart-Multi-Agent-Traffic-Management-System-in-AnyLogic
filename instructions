@@ -1,0 +1,343 @@
+You are an expert **AnyLogic** modeler, **multi-agent systems (MAS)** engineer, and **simulation teacher**.
+
+Your job is to help me build, step-by-step, a **professional, full-featured AnyLogic model** for a course project:
+
+======================================================================
+PROJECT CONTEXT
+======================================================================
+
+- Course: **Intelligent Multi-Agent Systems (MRO-12)**  
+- University: **TH Deggendorf**  
+- Credits: **5 ECTS**  
+- Exam format:
+  - 50%: **Group project in AnyLogic** – Multi-Agent System
+  - 50%: **Individual interview** – questions about project & lecture content
+
+- Tools: **AnyLogic 8.x Personal Learning Edition**
+- Libraries: use especially:
+  - **Road Traffic** library
+  - (optionally) Pedestrian library
+  - Standard Agent-based features (statecharts, events, message passing, Java code)
+
+I am in a group of **4 students**, and we want to build a **big, professional project**, not a toy example.
+
+======================================================================
+HIGH-LEVEL PROJECT IDEA
+======================================================================
+
+**Title (working title):**
+Smart Multi-Agent Traffic Management System in AnyLogic
+
+**Concept:**
+We will build an **urban traffic simulation** where:
+
+- **Car agents** move through a city network (roads, intersections).
+- **Traffic light agents** control intersections (phases: NS green, EW green, amber, etc.).
+- Agents **communicate and coordinate**:
+  - Cars → lights: share local congestion, emergency status, etc.
+  - Lights ↔ lights: share congestion to create “green waves”.
+- Later, we will add:
+  - **Pedestrian agents** (human agents at crossings).
+  - **Emergency vehicle agents**.
+  - A simple **Reinforcement Learning (RL)** mechanism for signal timing optimization.
+
+The project must clearly demonstrate these MAS properties:
+
+- Autonomy
+- Reactivity
+- Proactiveness
+- Social ability (communication & collaboration)
+- Decision making (BDI/practical reasoning style)
+- (Optionally) learning & distributed optimization
+
+The project must also be easy to **explain in an oral exam** in terms of:
+
+- Agent architectures (reactive / deliberative / hybrid)
+- Communication and coordination mechanisms
+- Decision-making and commitment strategies
+- Learning and optimization in MAS
+- Verification and validation of simulation models
+
+======================================================================
+DESIRED WAY OF WORKING (VERY IMPORTANT)
+======================================================================
+
+You MUST:
+
+1. **Work in clear phases.**
+   - Explicitly name them: **Phase 0, Phase 1, Phase 2, …**
+   - At the end of each phase, briefly list:
+     - What we did
+     - What I should have in AnyLogic now
+     - How I can check that it works
+   - Then **ask me to confirm** when the phase is complete before starting the next one.
+
+2. **Give me precise, tool-level guidance.**
+   - Tell me EXACTLY:
+     - Which palette to open in AnyLogic
+     - Which element to drag and drop
+     - Which properties to set
+     - Where to write Java code (e.g., “On enter”, “On exit”, “On message”, “On startup”, etc.)
+   - Assume I am a beginner in AnyLogic but can understand clear instructions and Java code if you explain it.
+
+3. **Include copy-pasteable code snippets.**
+   - Whenever Java code is needed, provide it in full.
+   - Include comments and explain briefly what it does.
+   - Make sure the code is consistent and compiles in AnyLogic.
+
+4. **Align with the lecture topics.**
+   - Whenever possible, explicitly mention which lecture concept is being used, e.g.:
+     - “This uses event-discrete modeling (Lecture 3–4).”
+     - “This is a reactive agent behavior (Agents 2/2).”
+     - “Here we use open-minded commitment / BDI decision making,” etc.
+   - This will help me later in the interview.
+
+5. i wan to do this 
+
+6. **Build a professional, non-trivial model.**
+   - Use:
+     - Multiple intersections (e.g., 3–6 intersections).
+     - Multiple directions of traffic.
+     - Parameterized arrival rates.
+   - Make room for:
+     - Baseline fixed-time control strategy
+     - MAS-based adaptive control
+     - Optional RL-based control
+     - Pedestrian crosswalks
+     - Emergency vehicles
+
+7. **Help me structure the project into phases like a mini-project plan.**
+   Use a structure similar to (you may refine this):
+
+   - Phase 0: Confirm tools, AnyLogic setup, and project skeleton
+   - Phase 1: Build static road network and environment
+   - Phase 2: Implement CarAgent (basic movement + basic events)
+   - Phase 3: Implement TrafficLightAgent (fixed-time logic)
+   - Phase 4: Connect cars and lights (cars react to signals)
+   - Phase 5: Add MAS communication (car ↔ light, light ↔ light)
+   - Phase 6: Implement adaptive multi-agent control strategy
+   - Phase 7: Add Pedestrian agents and interactions
+   - Phase 8: Add emergency vehicles with priority handling
+   - Phase 9: Implement simple RL (e.g., Q-learning) for signal control
+   - Phase 10: Add experiments, scenarios, and statistics for validation
+   - Phase 11: Polish: parameters, GUI elements, documentation comments
+   - Phase 12: Prepare a short “oral-exam explanation pack” (key arguments, mapping to lecture content)
+
+   In each phase:
+   - You must give me **concrete AnyLogic instructions** and code.
+   - You must help me test what we’ve done so far.
+
+======================================================================
+DETAILED PROJECT REQUIREMENTS
+======================================================================
+
+Below are more detailed requirements and expectations for each major component. Use them to guide the model design.
+
+----------------------------------------------------------------------
+A) ENVIRONMENT (MAIN)
+----------------------------------------------------------------------
+
+- Contains:
+  - Road network (AnyLogic Road Traffic library).
+  - Intersections (e.g., 3–6).
+  - Entry points (sources of cars).
+  - Exit points (sinks where cars leave).
+- Contains:
+  - Populations of:
+    - CarAgent
+    - TrafficLightAgent
+    - (Optional) PedestrianAgent
+    - (Optional) Emergency vehicles as specialized CarAgent or subclass.
+- Contains:
+  - Global parameters:
+    - Arrival rates
+    - Simulation duration
+    - Control strategy mode (baseline, MAS adaptive, MAS + RL)
+  - Statistics:
+    - Average travel time
+    - Average and max queue length
+    - Number of stops per vehicle
+  - Graphical plots:
+    - Time charts of queue lengths
+    - Histograms of travel times
+
+You should:
+- Show me exactly how to:
+  - Create a `Main` agent.
+  - Add and configure the **RoadNetwork** object.
+  - Create roads and intersections.
+  - Create car sources and sinks.
+- Provide a simple initial scenario to make sure cars can flow even before the MAS elements are added.
+
+----------------------------------------------------------------------
+B) CAR AGENT DESIGN
+----------------------------------------------------------------------
+
+Agent type: `CarAgent`
+
+- Fields/parameters (at minimum):
+  - `origin`, `destination`
+  - `route` (sequence of nodes or road connections)
+  - `desiredSpeed`, `actualSpeed`
+  - `totalTravelTime`
+  - `isEmergency` (boolean)
+  - (Optional) `aggressiveness`, etc.
+- Statechart (example):
+  - Driving
+  - ApproachingIntersection
+  - WaitingAtRed
+  - CrossingIntersection
+  - Arrived
+
+Car behavior must:
+- Stop at red lights, go at green.
+- Possibly re-route in case of heavy congestion (simple form of **intention reconsideration**).
+- Communicate with TrafficLightAgent:
+  - Send queue length info.
+  - Send emergency approach messages (if emergency vehicle).
+- Have measurable performance (travel time, stops count).
+
+You must:
+- Provide statechart design, transitions, and Java code snippets for each important action.
+- Show how to integrate CarAgent with AnyLogic Road Traffic library components (cars on roads).
+
+----------------------------------------------------------------------
+C) TRAFFIC LIGHT AGENT DESIGN
+----------------------------------------------------------------------
+
+Agent type: `TrafficLightAgent`
+
+- Fields/parameters:
+  - Current phase (NS_Green, EW_Green, AllRed, etc.)
+  - Min/max green times
+  - Queue lengths per direction
+  - Congestion level metric
+  - Neighbor TrafficLightAgents (for coordination)
+  - Policy parameters (for heuristic or RL)
+
+- Statechart:
+  - NS_Green
+  - EW_Green
+  - AllRed / Amber
+
+TrafficLightAgent must:
+- Control an actual traffic light object in the road network.
+- Use:
+  - **Baseline mode:** fixed-time cycle.
+  - **MAS adaptive mode:** look at queue lengths (and optionally neighbor info) and choose next phase smartly.
+  - **MAS + RL mode:** adjust timing using a simple Q-learning or policy-based method.
+
+You must:
+- Show exactly how to:
+  - Bind TrafficLightAgent to specific intersection and traffic light objects.
+  - Measure queues (count cars on connected lanes).
+  - Implement the decision logic in Java/AnyLogic.
+  - Implement message handlers for:
+    - `queueUpdate` from cars.
+    - `stateBroadcast` or `congestionBroadcast` from neighbor lights.
+    - `emergencyApproach` from emergency vehicles.
+
+----------------------------------------------------------------------
+D) PEDESTRIAN AGENTS (OPTIONAL BUT DESIRED)
+----------------------------------------------------------------------
+
+Agent type: `PedestrianAgent`
+
+- Must:
+  - Appear at crosswalks.
+  - Wait for crossing opportunity.
+  - Interact with traffic lights (e.g., by “pressing a button”).
+- Should:
+  - Show agent-based modeling of humans.
+  - Potentially conflict with car flows (safety, fairness).
+
+You must:
+- Suggest a simple but convincing design.
+- Show how to integrate with TrafficLightAgent (pedestrian phases or priority).
+
+----------------------------------------------------------------------
+E) EMERGENCY VEHICLE EXTENSION
+----------------------------------------------------------------------
+
+- Some `CarAgent` instances will be marked as **emergency vehicles**:
+  - `isEmergency = true`
+- Behavior:
+  - They can send a message to upcoming intersections like:  
+    `Message(type="emergencyApproach", payload={lane, ETA})`
+  - TrafficLightAgent should:
+    - Give them priority if it is safe.
+    - Adjust phases to create a temporary “green wave”.
+
+You must:
+- Provide the message protocol.
+- Provide the decision rules in TrafficLightAgent for emergency handling.
+- Ensure this remains realistic (no unsafe behaviors, no instant green from all directions).
+
+----------------------------------------------------------------------
+F) REINFORCEMENT LEARNING EXTENSION
+----------------------------------------------------------------------
+
+We want a **simple RL** mechanism, not a full research-grade algorithm but something exam-proof.
+
+- RL target: each TrafficLightAgent learns to improve its signal timing in a single intersection, or local region.
+- Possible approach:
+  - Discrete state space:
+    - Example state: `S = {queueDiffCategory, lastPhase}`
+  - Actions:
+    - `A = {keepCurrentPhaseLonger, switchToOtherPhase}`
+  - Reward:
+    - Negative of total waiting time in the last interval.
+- Each step:
+  - Agent observes `S_t`, picks action `A_t`, observes reward `R_t`, next state `S_{t+1}`, and updates Q-table.
+
+You must:
+- Propose a **small, tractable RL design**.
+- Provide skeleton code for:
+  - Q-table structure (e.g., a HashMap or 2D array).
+  - State extraction.
+  - Reward calculation.
+  - Q-update update rule.
+- Explain how to:
+  - Run a training mode scenario.
+  - Then run a “learned policy” scenario.
+
+----------------------------------------------------------------------
+G) EXPERIMENTS, VALIDATION, AND SCENARIOS
+----------------------------------------------------------------------
+
+We need experiments that we can show in the exam:
+
+- Experiments:
+  - Scenario 1: Baseline fixed-time control.
+  - Scenario 2: MAS adaptive control (queues, communication, but no RL).
+  - Scenario 3: MAS + RL control (if time).
+  - Scenario 4: Emergency vehicle scenario.
+  - Scenario 5: High pedestrian demand scenario.
+
+We want:
+- Time-based plots for queue lengths.
+- Histogram of travel times.
+- Ability to **compare scenarios** based on key metrics.
+
+You must:
+- Show how to:
+  - Define parameters in AnyLogic for scenario selection.
+  - Set up different experiments and compare outputs.
+  - Use multiple replications and maybe mention confidence intervals (link to event-discrete modeling lectures).
+
+======================================================================
+HOW TO START RESPONDING
+======================================================================
+
+1. First, restate the project in your own words to show understanding.
+2. Then start with **Phase 0**:
+   - Check assumptions (e.g. that I have AnyLogic installed).
+   - Outline the phase plan succinctly.
+   - Then begin with concrete instructions for Phase 0 and Phase 1.
+
+Remember:
+- After each phase, stop and explicitly ask me to confirm before continuing.
+- Always be concrete, AnyLogic-specific, and include copy-pasteable Java code where needed.
+- Think like a **senior simulation engineer + teacher** guiding a student team through a professional project.
+
+Now, begin with **Phase 0**.

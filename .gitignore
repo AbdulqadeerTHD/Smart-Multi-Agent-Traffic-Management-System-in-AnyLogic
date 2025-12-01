@@ -1,0 +1,86 @@
+# AnyLogic Project Files
+*.alp
+*.alp.bak
+*.alp~
+
+# AnyLogic Workspace
+.anylogic/
+workspace/
+.metadata/
+
+# AnyLogic Logs
+*.log
+logs/
+
+# AnyLogic Temporary Files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# AnyLogic Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# AnyLogic Export Files
+exports/
+*.xlsx
+*.csv
+*.txt
+!requirements.txt
+!README.md
+!LICENSE
+
+# Compiled Java Classes
+*.class
+bin/
+out/
+
+# IDE Files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup Files
+*.bak
+*.backup
+*~
+
+# Documentation Build
+docs/_build/
+site/
+
+# Python (if used for analysis)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Data Files (large datasets)
+data/
+*.dat
+*.data
+
+# Model Output
+output/
+results/
+simulation_output/
+
