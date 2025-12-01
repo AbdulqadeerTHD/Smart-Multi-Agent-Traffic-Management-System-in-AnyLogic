@@ -318,6 +318,21 @@ Message {
 - Demonstration scenarios
 - Performance analysis summary
 
+## Repository Information
+
+- **GitHub Repository**: [Smart-Multi-Agent-Traffic-Management-System-in-AnyLogic](https://github.com/AbdulqadeerTHD/Smart-Multi-Agent-Traffic-Management-System-in-AnyLogic)
+- **Main Branch**: `main` (stable/production code)
+- **Development Branch**: `dev` (all development work happens here)
+
+### Branch Workflow
+
+**IMPORTANT**: Always work on `dev` branch, never directly on `main`.
+
+- `main`: Contains tested, stable code (production-ready)
+- `dev`: Active development branch (all team members work here)
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed workflow instructions.
+
 ## Installation & Setup
 
 ### Prerequisites
@@ -327,6 +342,7 @@ Message {
 - Java Development Kit (JDK) - included with AnyLogic
 - Minimum 4GB RAM recommended
 - Windows, macOS, or Linux
+- Git (for version control)
 
 ### Installation Steps
 
@@ -337,16 +353,17 @@ Message {
    Download and install for your operating system
    ```
 
-2. **Clone or Download Project**
+2. **Clone Repository**
    ```bash
-   git clone <repository-url>
-   cd Smart_City_ANYLOGIC
+   git clone https://github.com/AbdulqadeerTHD/Smart-Multi-Agent-Traffic-Management-System-in-AnyLogic.git
+   cd Smart-Multi-Agent-Traffic-Management-System-in-AnyLogic
+   git checkout dev
    ```
 
 3. **Open Project in AnyLogic**
    - Launch AnyLogic
    - File → Open → Navigate to project folder
-   - Select `SmartTrafficMAS.alp`
+   - Select `SmartTrafficMAS.alp` (when created)
 
 4. **Verify Dependencies**
    - In Projects view, check model properties
@@ -548,6 +565,8 @@ This project includes comprehensive documentation:
 - **[README.md](README.md)**: Main project overview and guide (this file)
 - **[ARCHITECTURE.md](ARCHITECTURE.md)**: Detailed system architecture, diagrams, and design patterns
 - **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)**: Complete file and folder structure
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Git workflow and contribution guidelines
+- **[GIT_SETUP.md](GIT_SETUP.md)**: Git repository setup instructions
 - **[Phase0_Setup_Instructions.md](Phase0_Setup_Instructions.md)**: Phase 0 setup guide
 - **[instructions](instructions)**: Original project requirements
 
