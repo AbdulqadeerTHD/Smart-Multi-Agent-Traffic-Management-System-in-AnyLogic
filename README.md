@@ -1,5 +1,7 @@
 # Smart Multi-Agent Traffic Management System
 
+> **Development Branch (dev)**: This is the development branch where you can always make changes and contribute to the project. All active development happens here. See [CONTRIBUTING.md](CONTRIBUTING.md) for workflow guidelines.
+
 A professional AnyLogic simulation model demonstrating intelligent multi-agent systems (MAS) for urban traffic management. This project implements autonomous traffic agents, adaptive traffic light control, and reinforcement learning-based optimization.
 
 ## Table of Contents
