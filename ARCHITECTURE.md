@@ -2,6 +2,23 @@
 
 This document provides a comprehensive explanation of the Smart Multi-Agent Traffic Management System architecture, detailing how all components work together to create an intelligent, adaptive traffic simulation.
 
+## Table of Contents
+
+- [Introduction to the System](#introduction-to-the-system)
+- [Overall System Architecture](#overall-system-architecture)
+- [Main Agent and Global Control](#main-agent-and-global-control)
+- [CarAgent Architecture and Behavior](#caragent-architecture-and-behavior)
+- [TrafficLightAgent Architecture and Control Logic](#trafficlightagent-architecture-and-control-logic)
+- [Communication and Coordination Mechanisms](#communication-and-coordination-mechanisms)
+- [Multi-Agent Adaptive Control Strategy](#multi-agent-adaptive-control-strategy)
+- [Reinforcement Learning Integration](#reinforcement-learning-integration)
+- [Pedestrian Integration and Interactions](#pedestrian-integration-and-interactions)
+- [Emergency Vehicle Priority System](#emergency-vehicle-priority-system)
+- [Data Flow and Statistics Collection](#data-flow-and-statistics-collection)
+- [Control Flow and Decision Making](#control-flow-and-decision-making)
+- [System Integration and Execution](#system-integration-and-execution)
+- [Performance Optimization and Scalability](#performance-optimization-and-scalability)
+
 ## Introduction to the System
 
 The Smart Multi-Agent Traffic Management System is a sophisticated simulation model built using AnyLogic that demonstrates how multiple autonomous agents can work together to manage urban traffic flow. The system represents a real-world traffic network where cars, traffic lights, pedestrians, and emergency vehicles interact intelligently to optimize traffic movement while maintaining safety and efficiency.
@@ -15,6 +32,76 @@ The entire simulation runs within a Main Agent, which serves as the container fo
 Within this network, we have multiple intersections, typically three to six in a standard configuration, though the system can scale to accommodate larger networks. Each intersection is controlled by a TrafficLightAgent, which makes autonomous decisions about when to change signal phases. The roads connect these intersections, creating a network where vehicles can travel from entry points to exit points, passing through multiple intersections along their journey.
 
 The system maintains several agent populations simultaneously. The CarAgent population consists of all vehicles currently in the simulation, each with its own origin, destination, and route. The TrafficLightAgent population contains all traffic signal controllers, one for each intersection. Optionally, the system can include PedestrianAgent populations for modeling crosswalk interactions, and EmergencyVehicle agents which are specialized car agents with priority handling capabilities.
+
+### Complete System Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           SIMULATION ENVIRONMENT                         │
+│                                                                           │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │                         MAIN AGENT                                │  │
+│  │                                                                   │  │
+│  │  ┌────────────────────────────────────────────────────────────┐ │  │
+│  │  │              ROAD NETWORK (AnyLogic Library)               │ │  │
+│  │  │                                                             │ │  │
+│  │  │    ┌────────────┐    ┌────────────┐    ┌────────────┐   │ │  │
+│  │  │    │Intersection│    │Intersection│    │Intersection│   │ │  │
+│  │  │    │     1      │    │     2      │    │     3      │   │ │  │
+│  │  │    │            │    │            │    │            │   │ │  │
+│  │  │    │  [Light1] │    │  [Light2] │    │  [Light3] │   │ │  │
+│  │  │    └────────────┘    └────────────┘    └────────────┘   │ │  │
+│  │  │         │                  │                  │           │ │  │
+│  │  │         └──────────────────┼──────────────────┘           │ │  │
+│  │  │                            │                              │ │  │
+│  │  │                    Road Connections                        │ │  │
+│  │  └────────────────────────────────────────────────────────────┘ │  │
+│  │                                                                   │  │
+│  │  ┌────────────────────────────────────────────────────────────┐ │  │
+│  │  │                    AGENT POPULATIONS                       │ │  │
+│  │  │                                                             │ │  │
+│  │  │  CarAgent[]: [Car1, Car2, Car3, ..., CarN]                │ │  │
+│  │  │  TrafficLightAgent[]: [Light1, Light2, Light3, ...]      │ │  │
+│  │  │  PedestrianAgent[]: [Ped1, Ped2, ...] (optional)            │ │  │
+│  │  │  EmergencyVehicle[]: [Emerg1, ...] (subclass of CarAgent)  │ │  │
+│  │  └────────────────────────────────────────────────────────────┘ │  │
+│  │                                                                   │  │
+│  │  ┌────────────────────────────────────────────────────────────┐ │  │
+│  │  │              GLOBAL CONTROL & STATISTICS                  │ │  │
+│  │  │                                                             │ │  │
+│  │  │  Parameters:                                               │ │  │
+│  │  │    - controlStrategy (0/1/2)                              │ │  │
+│  │  │    - carArrivalRate                                        │ │  │
+│  │  │    - enableEmergencyVehicles                               │ │  │
+│  │  │    - enablePedestrians                                     │ │  │
+│  │  │                                                             │ │  │
+│  │  │  Statistics:                                               │ │  │
+│  │  │    - totalTravelTime                                       │ │  │
+│  │  │    - totalCarsProcessed                                    │ │  │
+│  │  │    - averageTravelTime()                                   │ │  │
+│  │  └────────────────────────────────────────────────────────────┘ │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Agent Communication Architecture
+
+```
+┌──────────────┐         ┌──────────────┐         ┌──────────────┐
+│  CarAgent    │────────▶│TrafficLight  │◀────────│TrafficLight  │
+│              │         │    Agent      │         │    Agent      │
+│  • Position  │         │  (Intersect1)│         │  (Intersect2)│
+│  • Speed     │         │              │         │              │
+│  • Route     │         │  • Phase     │         │  • Phase     │
+│  • Emergency │         │  • Queues    │         │  • Queues    │
+└──────────────┘         │  • RL State  │         │  • RL State  │
+                         └──────────────┘         └──────────────┘
+                                │                         │
+                                └─────────┬───────────────┘
+                                          │
+                                   Green Wave
+                                   Coordination
+```
 
 ## Main Agent and Global Control
 
@@ -36,6 +123,111 @@ When the signal turns green, the car transitions to the CrossingIntersection sta
 
 The CarAgent also demonstrates proactive behavior through route reconsideration. If the agent detects heavy congestion ahead, it can dynamically recalculate its route to avoid delays. This represents a form of intention reconsideration, where the agent changes its planned course of action based on new information about the environment.
 
+### CarAgent Internal Structure
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    CarAgent                              │
+│                                                          │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │              ATTRIBUTES                          │  │
+│  │  • origin: Node                                  │  │
+│  │  • destination: Node                              │  │
+│  │  • route: List<Node>                             │  │
+│  │  • desiredSpeed: double                          │  │
+│  │  • actualSpeed: double                           │  │
+│  │  • totalTravelTime: double                       │  │
+│  │  • isEmergency: boolean                          │  │
+│  │  • currentPosition: Point                        │  │
+│  └──────────────────────────────────────────────────┘  │
+│                                                          │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │              STATECHART                          │  │
+│  │                                                   │  │
+│  │    [Entry]                                       │  │
+│  │       │                                           │  │
+│  │       ▼                                           │  │
+│  │  ┌─────────┐                                      │  │
+│  │  │ Driving│                                      │  │
+│  │  └────┬────┘                                      │  │
+│  │       │                                           │  │
+│  │       ├─── approaching intersection ──┐          │  │
+│  │       │                                │          │  │
+│  │       ▼                                ▼          │  │
+│  │  ┌──────────────────┐          ┌──────────────┐ │  │
+│  │  │Approaching       │          │WaitingAtRed  │ │  │
+│  │  │Intersection      │          └──────┬───────┘ │  │
+│  │  └────────┬─────────┘                 │          │  │
+│  │           │                           │          │  │
+│  │           ├─── signal green ─────────┘          │  │
+│  │           │                                       │  │
+│  │           ▼                                       │  │
+│  │  ┌──────────────────┐                             │  │
+│  │  │Crossing          │                             │  │
+│  │  │Intersection      │                             │  │
+│  │  └────────┬─────────┘                             │  │
+│  │           │                                       │  │
+│  │           ├─── crossed ──┐                        │  │
+│  │           │              │                        │  │
+│  │           ▼              ▼                        │  │
+│  │  ┌─────────┐      ┌──────────┐                   │  │
+│  │  │ Driving │      │ Arrived  │                   │  │
+│  │  └─────────┘      └──────────┘                   │  │
+│  └──────────────────────────────────────────────────┘  │
+│                                                          │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │              FUNCTIONS                           │  │
+│  │  • updatePosition()                             │  │
+│  │  • checkTrafficSignal()                         │  │
+│  │  • sendQueueUpdate()                            │  │
+│  │  • reconsiderRoute()                            │  │
+│  │  • sendEmergencyMessage()                        │  │
+│  └──────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
+```
+
+### CarAgent State Machine (Detailed)
+
+```
+                    [Entry Point]
+                         │
+                         ▼
+                    ┌─────────┐
+                    │ Driving │
+                    └────┬────┘
+                         │
+         ┌───────────────┼───────────────┐
+         │               │               │
+    approaching    destination    congestion
+    intersection      reached      detected
+         │               │               │
+         ▼               ▼               ▼
+┌──────────────────┐ ┌──────────┐ ┌──────────────┐
+│Approaching       │ │ Arrived  │ │Reconsidering │
+│Intersection      │ └──────────┘ │Route         │
+└────┬─────────────┘              └──────┬───────┘
+     │                                   │
+     │                                   │
+     ├─── signal red ──┐                │
+     │                  │                │
+     ▼                  ▼                │
+┌──────────────┐  ┌──────────────┐      │
+│WaitingAtRed  │  │Crossing      │      │
+│              │  │Intersection  │      │
+└──────┬───────┘  └──────┬───────┘      │
+       │                 │               │
+       │                 │               │
+       └─── signal green ┘               │
+              │                         │
+              │                         │
+              └───────────┬─────────────┘
+                          │
+                          ▼
+                    ┌─────────┐
+                    │ Driving │
+                    └─────────┘
+```
+
 ## TrafficLightAgent Architecture and Control Logic
 
 The TrafficLightAgent is the intelligent controller for each intersection's traffic signals. It maintains detailed information about the current signal phase, timing constraints, queue lengths in each direction, and overall congestion levels. The agent also keeps references to neighboring TrafficLightAgents, enabling coordination for green wave patterns.
@@ -48,6 +240,98 @@ When operating in multi-agent adaptive mode, the TrafficLightAgent makes decisio
 
 The agent implements a sophisticated decision-making process that balances multiple factors. It must ensure minimum green times for safety, respect maximum green times to prevent excessive delays in other directions, respond to emergency vehicle requests with priority, and coordinate with neighbors for optimal network-wide performance.
 
+### TrafficLightAgent Internal Structure
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                TrafficLightAgent                         │
+│                                                          │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │              ATTRIBUTES                          │  │
+│  │  • currentPhase: Phase (NS_Green/EW_Green/etc)   │  │
+│  │  • minGreenTime: double                          │  │
+│  │  • maxGreenTime: double                          │  │
+│  │  • queueLengths: Map<Direction, Integer>         │  │
+│  │  • congestionLevel: double                      │  │
+│  │  • neighbors: List<TrafficLightAgent>           │  │
+│  │  • qTable: Map<State, Map<Action, Double>> (RL)  │  │
+│  │  • intersectionID: int                           │  │
+│  └──────────────────────────────────────────────────┘  │
+│                                                          │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │              STATECHART                          │  │
+│  │                                                   │  │
+│  │    [Entry]                                       │  │
+│  │       │                                           │  │
+│  │       ▼                                           │  │
+│  │  ┌──────────┐                                    │  │
+│  │  │ NS_Green │                                    │  │
+│  │  └────┬─────┘                                    │  │
+│  │       │                                           │  │
+│  │       ├─── timeout ──┐                           │  │
+│  │       │              │                           │  │
+│  │       ▼              ▼                           │  │
+│  │  ┌──────────┐  ┌──────────┐                    │  │
+│  │  │  Amber   │  │ EW_Green │                    │  │
+│  │  └────┬─────┘  └────┬─────┘                    │  │
+│  │       │              │                           │  │
+│  │       └─── timeout ──┘                           │  │
+│  │              │                                   │  │
+│  │              ▼                                   │  │
+│  │  ┌──────────┐                                    │  │
+│  │  │ AllRed  │                                    │  │
+│  │  └──────────┘                                    │  │
+│  └──────────────────────────────────────────────────┘  │
+│                                                          │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │              FUNCTIONS                           │  │
+│  │  • measureQueues()                              │  │
+│  │  • selectNextPhase()                            │  │
+│  │  • broadcastState()                              │  │
+│  │  • handleEmergency()                            │  │
+│  │  • updateQTable() (RL mode)                      │  │
+│  │  • getReward() (RL mode)                         │  │
+│  └──────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
+```
+
+### TrafficLightAgent State Machine (Control Modes)
+
+```
+                    [Entry Point]
+                         │
+                         ▼
+                    ┌──────────┐
+                    │ NS_Green │
+                    └────┬─────┘
+                         │
+         ┌───────────────┼───────────────┐
+         │               │               │
+    Fixed-Time      MAS Adaptive    MAS+RL
+    (timeout)       (queue-based)   (RL action)
+         │               │               │
+         ▼               ▼               ▼
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│   Amber      │  │   Amber      │  │   Amber      │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │
+       │                 │                 │
+       ▼                 ▼                 ▼
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│  EW_Green    │  │  EW_Green    │  │  EW_Green    │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │
+       │                 │                 │
+       └─────────┬───────┴─────────────────┘
+                 │
+                 ▼
+          ┌──────────┐
+          │  AllRed  │
+          └────┬─────┘
+               │
+               └─── (cycle repeats)
+```
+
 ## Communication and Coordination Mechanisms
 
 The system implements a comprehensive message-passing infrastructure that enables agents to communicate and coordinate their actions. CarAgents send queue update messages to TrafficLightAgents, providing information about how many vehicles are waiting in their direction. This information helps traffic lights make data-driven decisions about phase timing.
@@ -57,6 +341,119 @@ TrafficLightAgents communicate with each other through state broadcast messages.
 Emergency vehicles use a specialized communication protocol. When an emergency vehicle approaches an intersection, it sends an emergency approach message that includes its lane, estimated arrival time, and priority level. The receiving TrafficLightAgent immediately evaluates this request and, if safe, adjusts its phase timing to give the emergency vehicle priority passage.
 
 The communication system is asynchronous and event-driven. Messages are sent when specific conditions occur, such as a vehicle arriving at an intersection or a traffic light completing a phase change. This design ensures that agents only communicate when necessary, reducing computational overhead while maintaining effective coordination.
+
+### Message Flow Diagram
+
+```
+┌─────────────┐
+│  CarAgent   │
+│             │
+│  Position: │
+│  Near Light1│
+└──────┬──────┘
+       │
+       │ 1. queueUpdate(queueLength, direction)
+       │
+       ▼
+┌─────────────────────┐
+│ TrafficLightAgent 1 │
+│                     │
+│  Receives:          │
+│  - queueUpdate      │
+│  - emergencyApproach│
+│                     │
+│  Sends:             │
+│  - stateBroadcast   │
+└──────┬──────────────┘
+       │
+       │ 2. stateBroadcast(phase, congestion)
+       │
+       ▼
+┌─────────────────────┐
+│ TrafficLightAgent 2 │
+│  (Neighbor)         │
+│                     │
+│  Receives:          │
+│  - stateBroadcast   │
+│                     │
+│  Coordinates:       │
+│  - Green wave       │
+│  - Phase timing     │
+└─────────────────────┘
+```
+
+### Emergency Vehicle Communication Flow
+
+```
+┌──────────────────┐
+│ EmergencyVehicle │
+│                  │
+│  isEmergency=true│
+└────────┬─────────┘
+         │
+         │ emergencyApproach(lane, ETA, priority)
+         │
+         ▼
+┌─────────────────────┐         ┌─────────────────────┐
+│ TrafficLightAgent 1 │────────▶│ TrafficLightAgent 2│
+│  (Upcoming)         │         │  (Next)             │
+│                     │         │                     │
+│  Actions:           │         │  Actions:           │
+│  1. Check safety    │         │  1. Prepare green    │
+│  2. Extend green    │         │  2. Coordinate wave │
+│  3. Notify neighbor │         │  3. Notify next     │
+└─────────────────────┘         └─────────────────────┘
+         │
+         │
+         ▼
+┌─────────────────────┐
+│ TrafficLightAgent 3 │
+│  (Further ahead)   │
+│                     │
+│  Prepares:          │
+│  - Green wave       │
+│  - Priority phase   │
+└─────────────────────┘
+```
+
+### Complete Interaction Diagram
+
+```
+┌──────────────┐
+│  Main Agent  │
+│              │
+│  Creates &   │
+│  Manages:    │
+└──────┬───────┘
+       │
+       ├─────────────────┬─────────────────┬─────────────────┐
+       │                 │                 │                 │
+       ▼                 ▼                 ▼                 ▼
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│  CarAgent    │  │TrafficLight  │  │ Pedestrian   │  │  Emergency   │
+│              │  │   Agent      │  │   Agent      │  │   Vehicle    │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │                 │
+       │                 │                 │                 │
+       │ queueUpdate      │                 │                 │
+       ├─────────────────►│                 │                 │
+       │                 │                 │                 │
+       │                 │ stateBroadcast   │                 │
+       │◄────────────────┤                 │                 │
+       │                 │                 │                 │
+       │                 │                 │ crossingRequest  │
+       │                 │◄────────────────┤                 │
+       │                 │                 │                 │
+       │                 │                 │                 │
+       │                 │                 │                 │ emergencyApproach
+       │                 │◄─────────────────────────────────┤
+       │                 │                 │                 │
+       │                 │                 │                 │
+       │                 │◄────────────────┼─────────────────┤
+       │                 │  coordination   │                 │
+       │                 │  (green wave)  │                 │
+       │                 │                 │                 │
+```
 
 ## Multi-Agent Adaptive Control Strategy
 
@@ -68,6 +465,45 @@ The decision-making process follows a hierarchical approach. First, the agent ch
 
 The coordination between traffic lights creates emergent behaviors that improve overall system performance. Green waves form naturally as lights coordinate their phase changes, allowing vehicles to travel through multiple intersections without stopping. This coordination is not centrally controlled but emerges from local interactions between neighboring agents.
 
+### MAS Adaptive Control Decision Flow
+
+```
+TrafficLightAgent Decision Process:
+────────────────────────────────────
+
+1. Measure Queues
+   │
+   ├─► Count cars in each direction
+   │
+2. Receive Neighbor Info
+   │
+   ├─► Get congestion from neighbors
+   │
+3. Calculate Congestion
+   │
+   ├─► Aggregate queue data
+   │
+4. Decision Point
+   │
+   ├─► IF emergencyApproach received
+   │   └─► Handle Emergency (priority)
+   │
+   ├─► ELSE IF currentPhase timeout
+   │   └─► Select Next Phase:
+   │       ├─► Compare queue lengths
+   │       ├─► Check neighbor states
+   │       ├─► Consider green wave
+   │       └─► Choose optimal phase
+   │
+5. Execute Action
+   │
+   ├─► Change phase
+   │
+6. Broadcast State
+   │
+   └─► Notify neighbors
+```
+
 ## Reinforcement Learning Integration
 
 The system can operate in a reinforcement learning enhanced mode, where TrafficLightAgents learn optimal control policies through experience. Each agent maintains a Q-table that maps state-action pairs to expected rewards. The state representation includes queue difference between directions and the last phase that was active.
@@ -77,6 +513,41 @@ The learning process follows the standard Q-learning algorithm. The agent observ
 The reward function is designed to minimize total waiting time. Each agent receives a negative reward proportional to the total time vehicles spend waiting at its intersection. This creates an incentive for agents to minimize delays while learning effective control policies.
 
 Over time, agents learn which actions lead to better outcomes in different traffic conditions. The learning is distributed, with each agent learning independently, but the collective learning improves overall system performance. The system can operate in training mode, where agents explore and learn, and then switch to execution mode, where agents use their learned policies.
+
+### RL Control Flow (Q-Learning)
+
+```
+TrafficLightAgent RL Process:
+──────────────────────────────
+
+1. Observe State (S_t)
+   │
+   ├─► Extract: queueDiff, lastPhase
+   │
+2. Select Action (A_t)
+   │
+   ├─► Epsilon-greedy:
+   │   ├─► Random (exploration)
+   │   └─► argmax Q(S_t, A) (exploitation)
+   │
+3. Execute Action
+   │
+   ├─► Change phase or extend
+   │
+4. Observe Reward (R_t)
+   │
+   ├─► Calculate: -totalWaitingTime
+   │
+5. Observe Next State (S_{t+1})
+   │
+   ├─► Extract new state
+   │
+6. Update Q-Table
+   │
+   ├─► Q(S_t, A_t) ← Q(S_t, A_t) + α[R_t + γ max Q(S_{t+1}, A) - Q(S_t, A_t)]
+   │
+7. Repeat
+```
 
 ## Pedestrian Integration and Interactions
 
@@ -107,6 +578,46 @@ The Main Agent aggregates statistics from all vehicles, maintaining running tota
 The system also tracks queue lengths at each intersection, providing real-time information about congestion levels. TrafficLightAgents measure and report queue lengths, which are aggregated to provide network-wide congestion metrics. This data is used both for real-time decision making and for post-simulation analysis.
 
 Performance data flows from individual agents to the Main Agent, where it is aggregated and made available for visualization. Charts and plots display time series of queue lengths, histograms of travel times, and comparisons between different control strategies. This visualization enables analysis of system performance and validation of the multi-agent approach.
+
+### Statistics Collection Flow
+
+```
+┌─────────────┐
+│  CarAgent   │
+│             │
+│  Records:  │
+│  - startTime│
+│  - endTime  │
+│  - stops    │
+└──────┬──────┘
+       │
+       │ onArrival()
+       │
+       ▼
+┌─────────────────┐
+│  Main Agent     │
+│                 │
+│  Updates:       │
+│  - totalTravelTime│
+│  - totalCarsProcessed│
+│                 │
+│  Calculates:    │
+│  - averageTravelTime()│
+│  - queueLengths │
+│  - throughput   │
+└──────┬──────────┘
+       │
+       │
+       ▼
+┌─────────────────┐
+│  Charts/Plots   │
+│                 │
+│  Displays:      │
+│  - Time series  │
+│  - Histograms   │
+│  - Comparisons  │
+└─────────────────┘
+```
 
 ## Control Flow and Decision Making
 
@@ -146,4 +657,4 @@ The Smart Multi-Agent Traffic Management System demonstrates how distributed int
 
 ---
 
-**Note**: These explanations represent the conceptual architecture. Actual implementation may vary based on AnyLogic-specific features and optimizations.
+**Note**: These explanations and diagrams represent the conceptual architecture. Actual implementation may vary based on AnyLogic-specific features and optimizations.
