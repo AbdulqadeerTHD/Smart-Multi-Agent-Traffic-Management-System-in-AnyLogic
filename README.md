@@ -34,14 +34,6 @@ This project implements a comprehensive multi-agent traffic simulation system us
 - **Multiple Control Strategies**: Fixed-time baseline, MAS adaptive, and RL-enhanced modes
 - **Comprehensive Statistics**: Travel time, queue length, and performance metrics
 
-## Course Information
-
-- **Course**: Intelligent Multi-Agent Systems (MRO-12)
-- **University**: TH Deggendorf
-- **Credits**: 5 ECTS
-- **Exam Format**:
-  - 50%: Group project in AnyLogic (this project)
-  - 50%: Individual interview (project & lecture content)
 
 ## System Architecture
 
