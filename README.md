@@ -335,25 +335,6 @@ Message {
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed workflow instructions.
 
-## Installation & Setup
-
-### Prerequisites
-
-- AnyLogic 8.x Personal Learning Edition (free)
-  - Download from: https://www.anylogic.com/downloads/
-- Java Development Kit (JDK) - included with AnyLogic
-- Minimum 4GB RAM recommended
-- Windows, macOS, or Linux
-- Git (for version control)
-
-### Installation Steps
-
-1. **Download AnyLogic PLE**
-   ```
-   Visit: https://www.anylogic.com/downloads/
-   Select: Personal Learning Edition
-   Download and install for your operating system
-   ```
 
 2. **Clone Repository**
    ```bash
@@ -362,47 +343,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed workflow instructions.
    git checkout dev
    ```
 
-3. **Open Project in AnyLogic**
-   - Launch AnyLogic
-   - File → Open → Navigate to project folder
-   - Select `SmartTrafficMAS.alp` (when created)
-
-4. **Verify Dependencies**
-   - In Projects view, check model properties
-   - Ensure Road Traffic Library is enabled
-   - Enable Pedestrian Library if needed
-
-5. **Build and Run**
-   - Click Build button (hammer icon)
-   - Check Problems view for errors
-   - Click Run to start simulation
-
-## Usage
-
-### Running the Simulation
-
-1. **Select Control Strategy**
-   - In Main agent properties, set `controlStrategy`:
-     - `0`: Fixed-time baseline
-     - `1`: MAS adaptive control
-     - `2`: MAS + RL control
-
-2. **Configure Parameters**
-   - `carArrivalRate`: Vehicles per minute
-   - `enableEmergencyVehicles`: true/false
-   - `enablePedestrians`: true/false
-
-3. **Run Simulation**
-   - Click Run button
-   - Observe agent behaviors in 2D/3D view
-   - Monitor statistics in real-time
-
-4. **View Results**
-   - Check statistics variables
-   - Review performance charts
-   - Export data for analysis
-
-### Running Experiments
 
 1. **Create Experiment**
    - Right-click model → New → Experiment
@@ -534,18 +474,3 @@ See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for complete structure details.
 - **Emergency Response Time**: Emergency vehicle travel time
 - **Pedestrian Waiting Time**: Average wait at crosswalks
 - **Fuel Consumption** (estimated): Based on stops and idling
-
-
-## Future Enhancements
-
-Potential extensions for advanced development:
-
-- Multi-objective optimization (travel time vs. emissions)
-- V2X communication simulation
-- Weather condition impacts
-- Accident simulation and response
-- Public transportation integration
-- Dynamic route guidance systems
-- Machine learning for demand prediction
-- Real-time data integration
-
