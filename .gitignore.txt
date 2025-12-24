@@ -1,0 +1,6 @@
+.anylogic/
+output/
+build/
+temp/
+.DS_Store
+Thumbs.db
